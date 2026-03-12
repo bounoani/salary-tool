@@ -64,7 +64,7 @@
 
 <body>
 
-    <h2>給料計算ツール</h2>
+    <h2>給料計算ツール made by S.KATO</h2>
 
     <label>基本給（時給）</label>
     <input id="wage" type="number" step="1">
@@ -141,7 +141,8 @@
                 "残業手当: " + Math.round(overtimePay).toLocaleString() + " 円<br>" +
                 "深夜手当: " + Math.round(nightPay).toLocaleString() + " 円<br>" +
                 "深夜残業: " + Math.round(nightOtPay).toLocaleString() + " 円<br><hr>" +
-                "<b>合計: " + Math.round(total).toLocaleString() + " 円</b>";
+                "<b>合計: " + Math.round(total).toLocaleString() + " 円</b>" +
+                "（注意）この給料には誤差を含む可能性があるので注意してください。</b>";
         }
 
     </script>
