@@ -14,20 +14,33 @@
             padding: 20px;
         }
 
-        .timeInput {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .timeInput input {
-            width: 80px;
-            padding: 10px;
-            font-size: 16px;
+        h2 {
+            text-align: center;
         }
 
         label {
             font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+
+        .timeInput {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .timeInput input {
+            width: 100px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #wage {
+            width: 150px;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 5px;
         }
 
         button {
@@ -38,11 +51,13 @@
             color: white;
             border: none;
             border-radius: 5px;
+            margin-top: 20px;
         }
 
         .result {
-            margin-top: 20px;
+            margin-top: 25px;
             font-size: 18px;
+            line-height: 1.8;
         }
     </style>
 </head>
@@ -52,7 +67,7 @@
     <h2>給料計算ツール</h2>
 
     <label>基本給（時給 円）</label>
-    <input id="wage" type="number">
+    <input id="wage" type="number" step="1">
 
     <label>所定時間</label>
     <div class="timeInput">
@@ -85,54 +100,48 @@
     <script>
 
         function getHour(h, m) {
-
-            h = Number(h) || 0
-            m = Number(m) || 0
-
-            return h + m / 60
-
+            h = Number(h) || 0;
+            m = Number(m) || 0;
+            return h + m / 60;
         }
 
         function calc() {
 
-            let wage = Number(document.getElementById("wage").value)
+            let wage = Number(document.getElementById("wage").value);
 
             let normal = getHour(
                 document.getElementById("normal_h").value,
                 document.getElementById("normal_m").value
-            )
+            );
 
             let overtime = getHour(
                 document.getElementById("ot_h").value,
                 document.getElementById("ot_m").value
-            )
+            );
 
             let night = getHour(
                 document.getElementById("night_h").value,
                 document.getElementById("night_m").value
-            )
+            );
 
             let nightot = getHour(
                 document.getElementById("nightot_h").value,
                 document.getElementById("nightot_m").value
-            )
+            );
 
-            let base = wage * normal
-            let overtimePay = wage * 1.25 * overtime
-            let nightPay = wage * 1.25 * night
-            let nightOtPay = wage * 1.50 * nightot
+            let base = wage * normal;
+            let overtimePay = wage * 1.25 * overtime;
+            let nightPay = wage * 1.25 * night;
+            let nightOtPay = wage * 1.50 * nightot;
 
-            let total = base + overtimePay + nightPay + nightOtPay
+            let total = base + overtimePay + nightPay + nightOtPay;
 
-            document.getElementById("result").innerHTML = `
-基本給: ${Math.round(base).toLocaleString()} 円<br>
-残業手当: ${Math.round(overtimePay).toLocaleString()} 円<br>
-深夜手当: ${Math.round(nightPay).toLocaleString()} 円<br>
-深夜残業: ${Math.round(nightOtPay).toLocaleString()} 円<br>
-<hr>
-<b>合計: ${Math.round(total).toLocaleString()} 円</b>
-`
-
+            document.getElementById("result").innerHTML =
+                "基本給: " + Math.round(base).toLocaleString() + " 円<br>" +
+                "残業手当: " + Math.round(overtimePay).toLocaleString() + " 円<br>" +
+                "深夜手当: " + Math.round(nightPay).toLocaleString() + " 円<br>" +
+                "深夜残業: " + Math.round(nightOtPay).toLocaleString() + " 円<br><hr>" +
+                "<b>合計: " + Math.round(total).toLocaleString() + " 円</b>";
         }
 
     </script>
