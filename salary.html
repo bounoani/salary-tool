@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>給料計算ツール</title>
 
     <style>
@@ -14,10 +14,19 @@
             padding: 20px;
         }
 
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
         input {
             width: 100%;
             padding: 10px;
-            margin: 5px 0 15px;
+            margin-top: 5px;
+            margin-bottom: 15px;
             font-size: 16px;
         }
 
@@ -28,6 +37,7 @@
             background: #4CAF50;
             color: white;
             border: none;
+            border-radius: 5px;
         }
 
         .result {
@@ -41,65 +51,67 @@
 
     <h2>給料計算ツール</h2>
 
-    <label>時給 (円)</label>
-    <input id="wage" type="number" value="1000">
+    <label>基本給（時給 円）</label>
+    <input id="wage" type="number" step="1">
 
-    <label>所定労働時間</label>
-    <input id="normal" type="number">
+    <label>所定時間（例 14:25）</label>
+    <input id="normal" type="text" placeholder="14:25">
 
-    <label>残業時間（月60h以内）</label>
-    <input id="ot25" type="number">
+    <label>残業時間（例 02:30）</label>
+    <input id="overtime" type="text" placeholder="02:30">
 
-    <label>残業時間（月60h超）</label>
-    <input id="ot50" type="number">
+    <label>深夜所定（例 01:15）</label>
+    <input id="night" type="text" placeholder="01:15">
 
-    <label>深夜所定労働</label>
-    <input id="night" type="number">
+    <label>深夜残業（例 00:45）</label>
+    <input id="night_ot" type="text" placeholder="00:45">
 
-    <label>深夜残業</label>
-    <input id="night_ot" type="number">
-
-    <label>法定休日労働</label>
-    <input id="holiday" type="number">
-
-    <button onclick="calc()">給料計算</button>
+    <button onclick="calc()">計算</button>
 
     <div class="result" id="result"></div>
 
     <script>
 
+        function timeToHour(str) {
+
+            if (!str) return 0
+
+            let parts = str.split(":")
+
+            let h = Number(parts[0])
+            let m = Number(parts[1])
+
+            return h + m / 60
+
+        }
+
         function calc() {
 
-            let wage = Number(document.getElementById("wage").value);
+            let wage = Number(document.getElementById("wage").value)
 
-            let normal = Number(document.getElementById("normal").value);
-            let ot25 = Number(document.getElementById("ot25").value);
-            let ot50 = Number(document.getElementById("ot50").value);
-            let night = Number(document.getElementById("night").value);
-            let night_ot = Number(document.getElementById("night_ot").value);
-            let holiday = Number(document.getElementById("holiday").value);
+            let normal = timeToHour(document.getElementById("normal").value)
+            let overtime = timeToHour(document.getElementById("overtime").value)
+            let night = timeToHour(document.getElementById("night").value)
+            let night_ot = timeToHour(document.getElementById("night_ot").value)
 
-            let base = wage * normal;
+            let base = wage * normal
 
-            let overtime25 = wage * 1.25 * ot25;
-            let overtime50 = wage * 1.50 * ot50;
+            let overtimePay = wage * 1.25 * overtime
 
-            let night_pay = wage * 1.25 * night;
+            let nightPay = wage * 1.25 * night
 
-            let night_ot_pay = wage * 1.50 * night_ot;
+            let nightOtPay = wage * 1.50 * night_ot
 
-            let holiday_pay = wage * 1.35 * holiday;
-
-            let total = base + overtime25 + overtime50 + night_pay + night_ot_pay + holiday_pay;
+            let total = base + overtimePay + nightPay + nightOtPay
 
             document.getElementById("result").innerHTML = `
-基本給: ${base.toLocaleString()} 円<br>
-残業手当: ${(overtime25 + overtime50).toLocaleString()} 円<br>
-深夜手当: ${(night_pay + night_ot_pay).toLocaleString()} 円<br>
-休日手当: ${holiday_pay.toLocaleString()} 円<br>
+基本給: ${Math.round(base).toLocaleString()} 円<br>
+残業手当: ${Math.round(overtimePay).toLocaleString()} 円<br>
+深夜手当: ${Math.round(nightPay).toLocaleString()} 円<br>
+深夜残業手当: ${Math.round(nightOtPay).toLocaleString()} 円<br>
 <hr>
-<b>合計支給額: ${total.toLocaleString()} 円</b>
-`;
+<b>合計: ${Math.round(total).toLocaleString()} 円</b>
+`
 
         }
 
