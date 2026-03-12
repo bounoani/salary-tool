@@ -14,20 +14,20 @@
             padding: 20px;
         }
 
-        h2 {
-            text-align: center;
+        .timeInput {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .timeInput input {
+            width: 80px;
+            padding: 10px;
+            font-size: 16px;
         }
 
         label {
             font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            font-size: 16px;
         }
 
         button {
@@ -52,19 +52,31 @@
     <h2>給料計算ツール</h2>
 
     <label>基本給（時給 円）</label>
-    <input id="wage" type="number" step="1">
+    <input id="wage" type="number">
 
-    <label>所定時間（例 14:25）</label>
-    <input id="normal" type="text" placeholder="14:25">
+    <label>所定時間</label>
+    <div class="timeInput">
+        <input id="normal_h" type="number" placeholder="時間">
+        <input id="normal_m" type="number" placeholder="分">
+    </div>
 
-    <label>残業時間（例 02:30）</label>
-    <input id="overtime" type="text" placeholder="02:30">
+    <label>残業</label>
+    <div class="timeInput">
+        <input id="ot_h" type="number" placeholder="時間">
+        <input id="ot_m" type="number" placeholder="分">
+    </div>
 
-    <label>深夜所定（例 01:15）</label>
-    <input id="night" type="text" placeholder="01:15">
+    <label>深夜所定</label>
+    <div class="timeInput">
+        <input id="night_h" type="number" placeholder="時間">
+        <input id="night_m" type="number" placeholder="分">
+    </div>
 
-    <label>深夜残業（例 00:45）</label>
-    <input id="night_ot" type="text" placeholder="00:45">
+    <label>深夜残業</label>
+    <div class="timeInput">
+        <input id="nightot_h" type="number" placeholder="時間">
+        <input id="nightot_m" type="number" placeholder="分">
+    </div>
 
     <button onclick="calc()">計算</button>
 
@@ -72,14 +84,10 @@
 
     <script>
 
-        function timeToHour(str) {
+        function getHour(h, m) {
 
-            if (!str) return 0
-
-            let parts = str.split(":")
-
-            let h = Number(parts[0])
-            let m = Number(parts[1])
+            h = Number(h) || 0
+            m = Number(m) || 0
 
             return h + m / 60
 
@@ -89,18 +97,30 @@
 
             let wage = Number(document.getElementById("wage").value)
 
-            let normal = timeToHour(document.getElementById("normal").value)
-            let overtime = timeToHour(document.getElementById("overtime").value)
-            let night = timeToHour(document.getElementById("night").value)
-            let night_ot = timeToHour(document.getElementById("night_ot").value)
+            let normal = getHour(
+                document.getElementById("normal_h").value,
+                document.getElementById("normal_m").value
+            )
+
+            let overtime = getHour(
+                document.getElementById("ot_h").value,
+                document.getElementById("ot_m").value
+            )
+
+            let night = getHour(
+                document.getElementById("night_h").value,
+                document.getElementById("night_m").value
+            )
+
+            let nightot = getHour(
+                document.getElementById("nightot_h").value,
+                document.getElementById("nightot_m").value
+            )
 
             let base = wage * normal
-
             let overtimePay = wage * 1.25 * overtime
-
             let nightPay = wage * 1.25 * night
-
-            let nightOtPay = wage * 1.50 * night_ot
+            let nightOtPay = wage * 1.50 * nightot
 
             let total = base + overtimePay + nightPay + nightOtPay
 
@@ -108,7 +128,7 @@
 基本給: ${Math.round(base).toLocaleString()} 円<br>
 残業手当: ${Math.round(overtimePay).toLocaleString()} 円<br>
 深夜手当: ${Math.round(nightPay).toLocaleString()} 円<br>
-深夜残業手当: ${Math.round(nightOtPay).toLocaleString()} 円<br>
+深夜残業: ${Math.round(nightOtPay).toLocaleString()} 円<br>
 <hr>
 <b>合計: ${Math.round(total).toLocaleString()} 円</b>
 `
